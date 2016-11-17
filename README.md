@@ -1,0 +1,2 @@
+# supercollider
+Supercollider personal devices
