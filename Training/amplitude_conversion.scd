@@ -10,4 +10,11 @@ sine2 = {SinOsc.ar(mul:amps[1])};
 
 {sine1+sine2}.play;
 
+
+
+
+
+
+
+
 )
