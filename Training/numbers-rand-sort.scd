@@ -6,10 +6,10 @@
 
 exprand(1,1000.0)
 
-{exprand(1,1000.0)}.dup(100).post
+{exprand(1,1000.0)}.dup(100).mirror.post.plot
 
 dup(rand(1000.0),5)
 
-dup({rand(1000.0)},5).sort.scramble.plot
+dup({rand(1000.0)},5).mirror.plot
 
-{LFNoise0.ar}.play
+{LFNoise0.ar(10000)}.scope
