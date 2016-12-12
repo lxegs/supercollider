@@ -28,20 +28,44 @@
 		mul:0.3)}
 .scope)
 
+
 (
+// 1.4 p 17
 {
 	Blip.ar(
-		TRand.kr(
-			1000,1000,
+		TRand.kr( //VCO
+			1000,1000, //range
+			Impulse.kr(Line.kr(1,20,60))), //trigger
+		TRand.kr( //VCF(harmonics)
+			1,10, // range
+			Impulse.kr(Line.kr(1,20,60))), //trigger
+		Linen.kr( //VCA
+			Impulse.kr(1,20,60)), //trigger
+		0, //atatck
+		0.5, //sustain
+		1/Line.kr(1,20,60) //trigger
+)
+}.scope
+)
+
+(
+// 1.4 p 17 --> stereo version
+{
+	Blip.ar(
+		[TRand.kr( //VCO
+			1000,1000, //range
 			Impulse.kr(Line.kr(1,20,60))),
-		TRand.kr(
-			1,10,
-			Impulse.kr(Line.kr(1,20,60))),
-		Linen.kr(
-			Impulse.kr(1,20,60)),
-		0,
-		0.5,
-		1/Line.kr(1,20,60)
+		TRand.kr( //VCO
+			1000,1000, //range
+			Impulse.kr(Line.kr(1,20,60)))], //trigger
+		TRand.kr( //VCF(harmonics)
+			1,10, // range
+			Impulse.kr(Line.kr(1,20,60))), //trigger
+		Linen.kr( //VCA
+			Impulse.kr(1,20,60)), //trigger
+		0, //atatck
+		0.5, //sustain
+		1/Line.kr(1,20,60) //trigger
 )
 }.scope
 )
