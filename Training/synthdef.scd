@@ -23,3 +23,18 @@ SynthDef("grains_synth", {
 Synth("grains_synth");
 )
 
+(
+SynthDef(\some_grains, {
+	arg gate = 1 , amp = 1;
+	var out;
+	out=FMGrain.ar(
+		Impulse.ar(20),0.2,440,200,
+		LFNoise1.kr(1).range(1,10),
+		EnvGen.kr(
+			Env([0,1,0],[1,1], \sin,1),gate,
+		levelScale: amp,
+		doneAction: 2));
+	Out.ar(0,out);
+	Out.ar(1,out);
+}).add;)
+Synth("some_grains");
