@@ -20,6 +20,6 @@ SynthDef("grains_synth", {
 	out=SinGrain.ar(trigger,duration,freq);
 	Out.ar(0,out)
 }).add;
-{Synth("grains_synth")}.scope;
+Synth("grains_synth");
 )
 
