@@ -13,7 +13,7 @@ a.free;)
 
 (
 //run this first
-(SynthDef("PMCrotale", {
+SynthDef("PMCrotale", {
 	arg midi = 60, tone = 3, art = 1, amp = 0.8, pan = 0;
 	var env, out, mod, freq;
 
@@ -32,9 +32,9 @@ a.free;)
 
 	Out.ar(0, out);
 
-});
+}).add;
 )
 
 // then run this bunch of times
 
-Synth(\PMCrotale, ["midi", rrand(48, 72).round(1), "tone", rrand(1, 6)]/)
+Synth("PMCrotale", ["midi", rrand(48, 72).round(1), "tone", rrand(1, 6)]);
