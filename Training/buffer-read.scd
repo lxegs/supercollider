@@ -11,13 +11,13 @@
 
 (  // phasing
 {
-	var rate, trigger2, frames2;
-	frames2 = ~chooston.numFrames; // or use ~chooston.numFrames
+	var rate, trigger, frames;
+	frames = ~chooston.numFrames; // or use ~chooston.numFrames
 
 	rate = [1, 1.01];
-	trigger2 = Impulse.kr(rate);
-	PlayBuf.ar(1, ~chooston,rate:1,trigger:trigger2, frames:frames2 * Line.kr(0, 1, 60)) *
-		EnvGen.kr(Env.linen(0.01, 0.96, 0.01), trigger2) * rate;
+	trigger = Impulse.kr(rate);
+	PlayBuf.ar(1, ~chooston,1,trigger, frames * Line.kr(0, 1, 60)) *
+		EnvGen.kr(Env.linen(0.01, 0.96, 0.01), trigger) * rate;
 }.play;
 )
 
@@ -30,5 +30,30 @@
 }.scope(zoom:4);
 )
 
+// Using Bus for controls
+(
+~kbus1 = Bus.control;
+~kbus2 = Bus.control;
+{
+	var speed, direction;
+	speed = In.kr(~kbus1, 1) * 0.2 +1;
+	direction = In.kr(~kbus2);
+	PlayBuf.ar(1, ~chooston, (speed * direction), loop: 1);
+}.play;
+)
+(
+// now starts the controls
+{Out.kr(~kbus1, LFNoise0.kr(12))}.play;
+{Out.kr(~kbus2, LFClipNoise.kr(1/4))}.play;
+)
+/* Now start the second buffer with the same control input buses,
+but send it to the right channel using Out.ar(1 etc. */
+({
+var speed, direction;
+speed = In.kr(~kbus1, 1) * 0.2 + 1;
+direction = In.kr(~kbus2);
+Out.ar(1, PlayBuf.ar(1, ~houston, (speed * direction), loop: 1));
+}.play;
+)
 
 
