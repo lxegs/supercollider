@@ -39,7 +39,7 @@
 	speed = In.kr(~kbus1, 1) * 0.2 +1;
 	direction = In.kr(~kbus2);
 	PlayBuf.ar(1, ~chooston, (speed * direction), loop: 1);
-}.play;
+}.scope;
 )
 (
 // now starts the controls
@@ -60,21 +60,18 @@ Out.ar(1, PlayBuf.ar(1, ~houston, (speed * direction), loop: 1));
 ~kbus4 = Bus.control; // a control bus
 {Out.kr(~kbus3, SinOsc.kr(3).scope("out3") * 100)}.play;
 {Out.kr(~kbus4, LFPulse.kr(1/3).scope("out4") * 200)}.play;
-{Out.ar(0, SinOsc.ar(In.kr(~kbus3) + In.kr(~kbus4) + 440).scope("left"))}.
-play;
-{Out.ar(1, SinOsc.ar(In.kr(~kbus3) + In.kr(~kbus4) + 880).
-scope("right"))}.play;
+{Out.ar(0, SinOsc.ar(In.kr(~kbus3) + In.kr(~kbus4) + 440).scope("left"))}.play;
+{Out.ar(1, SinOsc.ar(In.kr(~kbus3) + In.kr(~kbus4) + 880).scope("right"))}.play;
 
-// combibned with SynthDef
+// combined with SynthDef
 ~kbus3 = Bus.control; // a control bus
 ~kbus4 = Bus.control; // a control bus
 {Out.kr(~kbus3, SinOsc.kr(3).range(340, 540))}.play;
 {Out.kr(~kbus4, LFPulse.kr(6).range(240, 640))}.play;
-SynthDef("Switch", {arg freq = 440; Out.ar(0, SinOsc.ar(freq, 0, 0.3)) }).
-add
+SynthDef("Switch", {arg freq = 440; Out.ar(0, SinOsc.ar(freq, 0, 0.3)) }).add;
 x = Synth("Switch"); // default
 
-x.map(\freq, ~kbus3)
-x.map(\freq, ~kbus4)
+x.map(\freq, ~kbus3);
+x.map(\freq, ~kbus4);
 
 
