@@ -23,6 +23,7 @@
 
 /* TODO
 
+display arguments name
 granulator free method (add in variable)
 set buffer in real-time (set method)
 add params to set in real-time (set method)
