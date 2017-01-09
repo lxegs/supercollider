@@ -1,5 +1,7 @@
 (
-~buffer=Buffer.read(s,"D:/Sound Material/My Lib/Detunized/DTS004 - Vox Populi Vol 1/Samples/Detunized Samples/Voxpop1/a-1dec13.wav");
+//~buffer=Buffer.read(s,"D:/Sound Material/My Lib/Detunized/DTS004 - Vox Populi Vol 1/Samples/Detunized Samples/Voxpop1/a-1dec13.wav");
+
+~buffer=Buffer.read(s,"sounds/a11wlk01.wav");
 
 ~granulator={
 	Warp1.ar(~buffer.numChannels,
