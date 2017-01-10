@@ -29,19 +29,20 @@ p = Platform.resourceDir +/+ "sounds/a11wlk01.wav";
 b = Buffer.read(s, p);
 
 SynthDef(\granulator, {
-	arg soundfile, buffer=0;
+	arg soundfile;
 	var numberchannels, numberbuffer, out;
 	numberchannels = soundfile.numChannels;
-	//numberbuffer = soundfile.bufnum;
 
 
-	out = Warp1.ar(numberchannels,buffer,([MouseX.kr(0,1),MouseY.kr(0,1)]*BufDur.kr(soundfile))+TRand.kr(0,0.1,Impulse.kr(400)),[MouseX.kr(0,2),MouseY.kr(0,2)]**WhiteNoise.ar([MouseX.kr(0,2),MouseY.kr(0,2)]),[MouseX.kr(0.05,60),MouseY.kr(0.05,60),MouseY.kr(0.05,60)],-1,8,1,4,1,0);
 
-	Out.ar(1, out);
-}).add;
+	out = Warp1.ar(numberchannels,b.bufnum,([MouseX.kr(0,1),MouseY.kr(0,1)]*BufDur.kr(soundfile))+TRand.kr(0,0.1,Impulse.kr(400)),[MouseX.kr(0,2),MouseY.kr(0,2)]**WhiteNoise.ar([MouseX.kr(0,2),MouseY.kr(0,2)]),[MouseX.kr(0.05,60),MouseY.kr(0.05,60),MouseY.kr(0.05,60)],-1,8,1,4,1,0);
+
+	Out.ar(0, out);
+}).add.send(s);
 )
 
-x=Synth(\granulator, [\soundfile, b, \buffer, b]);
+x=Synth(\granulator, [\soundfile, b]);
+s.scope;
 x.free;
 
 
