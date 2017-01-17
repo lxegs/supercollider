@@ -1,0 +1,444 @@
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf540
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
+\red96\green96\blue96;\red0\green115\blue0;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f0\fs28 \cf2 //pointillistic sound @hangar 101008-101010  /f0\cf3 \
+\
+\
+b= \cf4 Buffer\cf3 .read(s, \cf5 "sounds/a11wlk01-44_1.aiff"\cf3 );\
+b.plot\
+b.numChannels\
+b.dump\
+\
+(\
+\cf2 //mono buffer one-shot player\cf3 \
+\cf4 SynthDef\cf3 (\cf6 \\samp\cf3 , \{\cf4 |buffer, rate= 1, amp= 0.5|\cf3 \
+	\cf4 var\cf3  src= \cf4 PlayBuf\cf3 .ar(1, buffer, rate);\
+	\cf4 var\cf3  env= \cf4 EnvGen\cf3 .kr(\cf4 Env\cf3 .perc(0.01, 1), doneAction:2);\
+	\cf4 Out\cf3 .ar(0, \cf4 Pan2\cf3 .ar(src*env*amp));\
+\}).add;\
+\
+\cf2 //stereo buffer one-shot player\cf3 \
+\cf4 SynthDef\cf3 (\cf6 \\samp2\cf3 , \{\cf4 |buffer, rate= 1, amp= 0.5|\cf3 \
+	\cf4 var\cf3  src= \cf4 PlayBuf\cf3 .ar(2, buffer, rate);\
+	\cf4 var\cf3  env= \cf4 EnvGen\cf3 .kr(\cf4 Env\cf3 .perc(0.01, 1), doneAction:2);\
+	\cf4 Out\cf3 .ar(0, src*env*amp);\
+\}).add;\
+)\
+\
+\cf4 Synth\cf3 (\cf6 \\samp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , 1])\
+\
+\
+\
+(\
+r= \cf4 Task\cf3 (\{\
+	8.do\{\cf4 |index|\cf3 \
+		\cf4 Synth\cf3 (\cf6 \\samp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , index.linlin(0, 7, 0.5, 1.5)]);\
+		0.1.wait;\
+	\};\
+\})\
+)\
+r.play\
+r.reset\
+\
+\
+(\
+r= \cf4 Task\cf3 (\{\
+	\cf4 inf\cf3 .do\{\cf4 |index|\cf3 \
+		\cf4 Synth\cf3 (\cf6 \\samp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , 0.5, \cf6 \\amp\cf3 , 0.4]);\
+		0.5.wait;\
+		\cf4 Synth\cf3 (\cf6 \\samp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , 2, \cf6 \\amp\cf3 , 0.1]);\
+		0.125.wait;\
+		\cf4 Synth\cf3 (\cf6 \\samp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , 1, \cf6 \\amp\cf3 , 0.1]);\
+		0.125.wait;\
+		if(0.1.coin, \{\
+			8.do\{\cf4 |jndex|\cf3 \
+				\cf4 Synth\cf3 (\cf6 \\samp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , jndex.linlin(0, 7, 0.5, 3), \cf6 \\amp\cf3 , 0.2]);\
+				0.0625.wait;\
+			\};\
+		\});\
+	\};\
+\})\
+)\
+r.play\
+r.stop\
+\
+\
+\cf2 //segment players for mono and stereo buffers\cf3 \
+(\
+\cf4 SynthDef\cf3 (\cf6 \\segSamp\cf3 , \{\cf4 |buffer, atk= 0.01, sus= 1, rel= 0.1, offset= 0, rate= 1, amp= 0.5, pan= 0|\cf3 \
+	\cf4 var\cf3  src= \cf4 PlayBuf\cf3 .ar(1, buffer, rate, 1, offset, 1);\
+	\cf4 var\cf3  env= \cf4 EnvGen\cf3 .kr(\cf4 Env\cf3 .linen(atk, sus, rel), doneAction:2);\
+	\cf4 Out\cf3 .ar(0, \cf4 Pan2\cf3 .ar(src*env*amp, pan));\
+\}).add;\
+\
+\cf4 SynthDef\cf3 (\cf6 \\segSamp2\cf3 , \{\cf4 |buffer, atk= 0.01, sus= 1, rel= 0.1, offset= 0, rate= 1, amp= 0.5, pan= 0|\cf3 \
+	\cf4 var\cf3  src= \cf4 PlayBuf\cf3 .ar(2, buffer, rate, 1, offset, 1);\
+	\cf4 var\cf3  env= \cf4 EnvGen\cf3 .kr(\cf4 Env\cf3 .linen(atk, sus, rel), doneAction:2);\
+	\cf4 Out\cf3 .ar(0, \cf4 Balance2\cf3 .ar(src[0], src[1], pan)*env*amp);\
+\}).add;\
+)\
+\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.01, \cf6 \\offset\cf3 , b.numFrames*0.5])\
+\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.2, \cf6 \\offset\cf3 , b.numFrames*0.1])\
+\
+b.numFrames		\cf2 //return number of samples\cf3 \
+\
+\
+(\
+r= \cf4 Task\cf3 (\{\
+	\cf4 inf\cf3 .do\{\cf4 |index|\cf3 \
+		\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.1.rrand(0.2), \cf6 \\rate\cf3 , 2.0.rand, \cf6 \\offset\cf3 , b.numFrames.rand, \cf6 \\amp\cf3 , 0.2.rand]);\
+		0.1.wait;\
+	\};\
+\});\
+)\
+r.play\
+r.stop\
+\
+\
+(\
+r= \cf4 Task\cf3 (\{\
+	\cf4 inf\cf3 .do\{\cf4 |index|\cf3 \
+		\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.1.rrand(0.2), \cf6 \\rate\cf3 , 0.8, \cf6 \\offset\cf3 , (index%100).linlin(0, 99, b.numFrames, 0), \cf6 \\amp\cf3 , 0.1]);\
+		0.09.rrand(0.11).wait;\
+	\};\
+\});\
+)\
+r.play\
+r.stop\
+\
+\
+(\
+r= \cf4 Task\cf3 (\{\
+	\cf4 inf\cf3 .do\{\cf4 |index|\cf3 \
+		\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.1.rrand(0.2), \cf6 \\rate\cf3 , (index%30).linlin(0, 29, 0.8, 1.5), \cf6 \\offset\cf3 , (index%50).linlin(0, 49, b.numFrames, 0), \cf6 \\amp\cf3 , 0.1]);\
+		0.1.wait;\
+	\};\
+\});\
+)\
+r.play\
+r.stop\
+\
+\
+(\
+r= \cf4 Task\cf3 (\{\
+	\cf4 inf\cf3 .do\{\
+		12.do\{\cf4 |index|\cf3 \
+			\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.1.rrand(0.2), \cf6 \\rate\cf3 , 1, \cf6 \\offset\cf3 , 2000, \cf6 \\amp\cf3 , 0.1]);\
+			0.1.wait;\
+		\};\
+		4.do\{\cf4 |index|\cf3 \
+			\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.1.rrand(0.2), \cf6 \\rate\cf3 , 2, \cf6 \\offset\cf3 , 5000, \cf6 \\amp\cf3 , 0.1]);\
+			0.1.wait;\
+		\};\
+		4.do\{\cf4 |index|\cf3 \
+			\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.1.rrand(0.2), \cf6 \\rate\cf3 , 3, \cf6 \\offset\cf3 , 5000, \cf6 \\amp\cf3 , 0.1]);\
+			0.1.wait;\
+		\};\
+		4.do\{\cf4 |index|\cf3 \
+			\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.1.rrand(0.2), \cf6 \\rate\cf3 , 0.5, \cf6 \\offset\cf3 , 5000, \cf6 \\amp\cf3 , 0.1]);\
+			0.1.wait;\
+		\};\
+		4.do\{\cf4 |index|\cf3 \
+			\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\sus\cf3 , 0.1.rrand(0.2), \cf6 \\rate\cf3 , 3, \cf6 \\offset\cf3 , 9000, \cf6 \\amp\cf3 , 0.1]);\
+			0.1.wait;\
+		\};\
+	\};\
+\});\
+)\
+r.play\
+r.stop\
+\
+\
+\
+\cf2 //interactive code control\cf3 \
+a-z				\cf2 //'global' variables (environment variables)\cf3 \
+~time= 0.1;\
+~time\
+\
+(\
+~task= \cf4 Task\cf3 (\{\
+	\cf4 inf\cf3 .do\{\
+		\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , 0.9, \cf6 \\offset\cf3 , b.numFrames*0.2, \cf6 \\amp\cf3 , 0.1]);\
+		~time.wait;\
+	\};\
+\})\
+)\
+~task.play\
+~time= 1\
+~time= 0.5\
+~time= 0.25\
+~time= 0.125\
+~task.stop\
+\
+\
+(\
+~time= 0.5;\
+~attackTime= 0.01;\
+~release= 0.1;\
+~rate= 1;\
+~position= 0;\
+~amplitude= 0.1;\
+~sustainTime= 1;\
+~task= \cf4 Task\cf3 (\{\
+	\cf4 inf\cf3 .do\{\
+		\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , ~rate, \cf6 \\offset\cf3 , ~position*b.numFrames, \cf6 \\amp\cf3 , ~amplitude, \cf6 \\rel\cf3 , ~releaseTime, \cf6 \\atk\cf3 , ~attackTime, \cf6 \\sus\cf3 , ~sustainTime]);\
+		~time.value.wait;\
+	\};\
+\})\
+)\
+~task.play\
+~releaseTime= 0.9\
+~attackTime= 0.9\
+~position= 0.8\
+~rate= 0.4\
+~time= 1\
+~sustainTime= 0.2\
+~task.stop\
+\
+~task.play\
+~rate= \{0.1.rrand(0.5)\}\
+~time= \{1.0.rrand(2)\}\
+~time= 0.5\
+~task.stop\
+\
+\
+~task.play\
+(	\cf2 //preset 1\cf3 \
+~time= 0.5;\
+~attackTime= 0.01;\
+~release= 0.1;\
+~rate= 1;\
+~position= 0;\
+~amplitude= 0.1;\
+~sustainTime= 1;\
+)\
+(	\cf2 //preset 2\cf3 \
+~time= 0.25;\
+~attackTime= 0;\
+~release= 0.1;\
+~rate= 10;\
+~position= 0;\
+~amplitude= 0.1;\
+~sustainTime= 1;\
+)\
+(	\cf2 //preset 3\cf3 \
+~time= 0.25;\
+~attackTime= 0;\
+~release= 0.1;\
+~rate= \{if(0.1.coin, \{1.1\}, \{-1.1\})\};\
+~position= \{if(0.1.coin, \{0.6\}, \{0.1\})\};\
+~amplitude= 0.1;\
+~sustainTime= 1;\
+)\
+~task.stop\
+\
+\
+\
+\
+\
+\cf2 //midi control\cf3 \
+(\
+c= \cf4 CCResponder\cf3 (\{\cf4 |src, chn, num, val|\cf3 \
+	[src, chn, num, val].postln;\
+	if(num==3, \{\
+		~time= val.linlin(0, 127, 0.01, 1);\
+	\});\
+	if(num==4, \{\
+		~rate= val.linexp(0, 127, 0.5, 10);\
+	\});\
+	if(num==45 and:\{val>0\}, \{\
+		~task.play;\
+	\});\
+	if(num==46 and:\{val>0\}, \{\
+		~task.stop;\
+	\});\
+\});\
+)\
+c.remove\
+\
+\
+(\
+d= \cf4 NoteOnResponder\cf3 (\{\cf4 |src, chn, num, val|\cf3 \
+	[src, chn, num, val].postln;\
+	if(val>0, \{\
+		\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\rate\cf3 , num.linlin(0, 127, 0.5, 2)]);\
+	\});\
+\});\
+)\
+d.remove\
+\
+\
+\cf2 //gui control\cf3 \
+~task.play\
+(\
+w= \cf4 Window\cf3 (\cf5 "control"\cf3 , \cf4 Rect\cf3 (10, 10, 500, 500)).front;\
+\cf4 EZSlider\cf3 (w, \cf4 Rect\cf3 (10, 10, 200, 20), \cf5 "rate"\cf3 , action:\{\cf4 |view|\cf3  ~rate= view.value.linexp(0, 1, 0.5, 10)\});\
+\cf4 EZSlider\cf3 (w, \cf4 Rect\cf3 (10, 50, 200, 20), \cf5 "time"\cf3 , action:\{\cf4 |view|\cf3  ~time= view.value.linexp(0, 1, 0.01, 0.9)\});\
+)\
+~task.stop\
+w.close\
+\
+\
+~task.play\
+(\
+a= [\
+	[\cf5 "rate"\cf3 , \{\cf4 |view|\cf3  ~rate= view.value.linlin(0, 1, 0.5, 2)\}],\
+	[\cf5 "time"\cf3 , \{\cf4 |view|\cf3  ~time= view.value.linlin(0, 1, 0.01, 1)\}],\
+	[\cf5 "amp"\cf3 , \{\cf4 |view|\cf3  ~amplitude= view.value.linlin(0, 1, 0, 1)\}]\
+];\
+w= \cf4 Window\cf3 (\cf5 "control"\cf3 , \cf4 Rect\cf3 (10, 10, 500, 500)).front;\
+a.do\{\cf4 |array, index|\cf3 \
+	\cf4 EZSlider\cf3 (w, \cf4 Rect\cf3 (10, 10+(index*40), 200, 20), array[0], action:array[1]);\
+\};\
+)\
+~task.stop\
+w.close\
+\
+\
+\
+\
+\cf2 //better engine\cf3 \
+b= \cf4 Buffer\cf3 .read(s, \cf5 "sounds/a11wlk01-44_1.aiff"\cf3 );\
+(\
+~currentBuffer= b;\
+~offset= 0;\
+~amplitude= 0.2;\
+~pan= 0;\
+~rate= 1;\
+~attack= 0.01;\
+~sustain= 0.1;\
+~release= 0.1;\
+~time= 0.5;\
+~engine= \cf4 Task\cf3 (\{\
+	\cf4 inf\cf3 .do\{\
+		\cf4 var\cf3  buf= ~currentBuffer.value;\
+		\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , buf, \cf6 \\offset\cf3 , buf.numFrames*~offset, \cf6 \\amp\cf3 , ~amplitude, \cf6 \\pan\cf3 , ~pan, \cf6 \\rate\cf3 , ~rate, \cf6 \\atk\cf3 , ~attack, \cf6 \\rel\cf3 , ~release, \cf6 \\sus\cf3 , ~sustain]);\
+		~time.value.wait;\
+	\};\
+\})\
+)\
+~engine.play\
+~offset= 0.3\
+~offset= 0.7\
+~rate= 2\
+~engine.stop\
+\
+c= \cf4 Buffer\cf3 .read(s, \cf5 "/Applications/SuperCollider3/common/build/sounds/amenmono.wav"\cf3 )\
+d= \cf4 Buffer\cf3 .read(s,\cf5 "/Applications/SuperCollider3/common/build/sounds/Mac Startup Sound.aif"\cf3 )\
+\
+~engine.play\
+i= 0\
+~currentBuffer= \{i= i+1; if(i%3==0, \{~offset= 0.2; d\}, \{~offset= 1.0.rand; [d, c].choose\})\}\
+~time= \{1.0.rand.round(0.1)+0.01\}\
+~amplitude= \{1.0.linrand\}\
+~pan= \{[1, -1].choose\}\
+~engine.stop\
+\
+\
+\
+~engine.play\
+(\
+w= \cf4 Window\cf3 (\cf5 "engine control"\cf3 , \cf4 Rect\cf3 (10, 10, 500, 500)).front;\
+\cf4 EZRanger\cf3 (w, \cf4 Rect\cf3 (5, 50, 350, 25), \cf5 "amp"\cf3 , action:\{\cf4 |view|\cf3  ~amplitude= \{view.value[0].rrand(view.value[1]).linlin(0, 1, 0, 0.1)\}\});\
+\cf4 EZRanger\cf3 (w, \cf4 Rect\cf3 (5, 100, 350, 25), \cf5 "rate"\cf3 , action:\{\cf4 |view|\cf3  ~rate= \{view.value[0].rrand(view.value[1]).linexp(0, 1, 0.1, 5)\}\});\
+\cf4 EZRanger\cf3 (w, \cf4 Rect\cf3 (5, 150, 350, 25), \cf5 "time"\cf3 , action:\{\cf4 |view|\cf3  ~time= \{view.value[0].rrand(view.value[1]).linlin(0, 1, 0.001, 1)\}\});\
+\cf4 EZRanger\cf3 (w, \cf4 Rect\cf3 (5, 200, 350, 25), \cf5 "pan"\cf3 , action:\{\cf4 |view|\cf3  ~pan= \{view.value[0].rrand(view.value[1]).linlin(0, 1, -1, 1)\}\});\
+\cf4 EZRanger\cf3 (w, \cf4 Rect\cf3 (5, 250, 350, 25), \cf5 "offset"\cf3 , action:\{\cf4 |view|\cf3  ~offset= \{view.value[0].rrand(view.value[1])\}\});\
+\cf4 EZRanger\cf3 (w, \cf4 Rect\cf3 (5, 300, 350, 25), \cf5 "attack"\cf3 , action:\{\cf4 |view|\cf3  ~attack= \{view.value[0].rrand(view.value[1])\}\});\
+\cf4 EZRanger\cf3 (w, \cf4 Rect\cf3 (5, 350, 350, 25), \cf5 "sustain"\cf3 , action:\{\cf4 |view|\cf3  ~sustain= \{view.value[0].rrand(view.value[1])\}\});\
+\cf4 EZRanger\cf3 (w, \cf4 Rect\cf3 (5, 400, 350, 25), \cf5 "release"\cf3 , action:\{\cf4 |view|\cf3  ~release= \{view.value[0].rrand(view.value[1])\}\});\
+)\
+~engine.stop\
+w.close\
+\
+\
+~engine.play\
+i= 0;\
+~currentBuffer= c\
+~amplitude= \{0.1\}\
+~rate= \{[0.2, 0.25, -0.3].wrapAt(i)\}\
+~time= \{i= i+1; [0.125, 0.125, 0.25].wrapAt(i)\}\
+~offset= \{[0.2, 0, 0.5, 0.6].wrapAt(i)\}\
+~pan= 0.25\
+~pan= 0.75\
+~pan= -0.75\
+~pan= -0.25\
+~pan= \{[0.25, 0.75, -0.75, -0.25].choose\}\
+~engine.stop\
+\
+\
+\cf2 //use PanAz for panning in x number of channels.  this synthdef is for 4\cf3 \
+(\
+\cf4 SynthDef\cf3 (\cf6 \\segSamp4\cf3 , \{\cf4 |buffer, atk= 0.01, sus= 1, rel= 0.1, offset= 0, rate= 1, amp= 0.5, pan= 0|\cf3 \
+	\cf4 var\cf3  src= \cf4 PlayBuf\cf3 .ar(1, buffer, rate, 1, offset, 1);\
+	\cf4 var\cf3  env= \cf4 EnvGen\cf3 .kr(\cf4 Env\cf3 .linen(atk, sus, rel), doneAction:2);\
+	\cf4 Out\cf3 .ar(0, \cf4 PanAz\cf3 .ar(4, src*env*amp, pan));\
+\}).add;\
+)\
+\
+\
+\
+\cf2 //network - playing grains on all connected laptops\cf3 \
+(\
+~servers= [\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.120"\cf3 , 57110)),\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.116"\cf3 , 57110)),\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.179"\cf3 , 57110)),\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.134"\cf3 , 57110)),\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.108"\cf3 , 57110)),\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.146"\cf3 , 57110)),\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.129"\cf3 , 57110)),\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.102"\cf3 , 57110)),\
+	\cf4 Server\cf3 (\cf6 \\localhost\cf3 , \cf4 NetAddr\cf3 (\cf5 "172.26.1.88"\cf3 , 57110))\
+];\
+)\
+\
+a= \cf4 Synth\cf3 (\cf6 \\default\cf3 , [\cf6 \\freq\cf3 , 800.rrand(1400)], target:~servers[2])\
+a.free\
+\
+(\
+r= \cf4 Task\cf3 (\{\
+	30.do\{\cf4 |index|\cf3 \
+		a= \cf4 Synth\cf3 (\cf6 \\default\cf3 , [\cf6 \\freq\cf3 , index*50+200], target:~servers.wrapAt(index));\
+		0.1.wait;\
+		a.release;\
+		0.01.wait;\
+	\};\
+\})\
+)\
+r.play\
+r.reset\
+\
+\
+\cf2 //make sure everybody have a buffer with index 100\cf3 \
+b= \cf4 Buffer\cf3 .read(s, \cf5 "sounds/a11wlk01-44_1.aiff"\cf3 , bufnum:100)\
+(\
+r= \cf4 Task\cf3 (\{\
+	130.do\{\cf4 |index|\cf3 \
+		index.postln;\
+		\cf4 Synth\cf3 (\cf6 \\segSamp\cf3 , [\cf6 \\buffer\cf3 , b, \cf6 \\amp\cf3 , 0.7, \cf6 \\rate\cf3 , (index%9).linlin(0, 8, 0.8, 4), \cf6 \\atk\cf3 , 0, \cf6 \\sus\cf3 , 0.01], target: ~servers.wrapAt(index));\
+		0.01.wait;\
+	\};\
+\})\
+)\
+r.play\
+r.reset\
+r.stop\
+\
+a= \cf4 Synth\cf3 (\cf6 \\default\cf3 , target:~servers[2])\
+a.free\
+\
+\
+\
+\cf2 //send and receive osc between machines - also to/from applications like max, processing and pd\cf3 \
+(\
+\cf4 OSCresponder\cf3 (\cf4 nil\cf3 , \cf6 \\chat\cf3 , \{\cf4 |t, r, m|\cf3 	\cf2 //receive in sclang - port default= 57120\cf3 \
+	[t, r, m].postln;\
+\}).add\
+)\
+n= \cf4 NetAddr\cf3 (\cf5 "127.0.0.1"\cf3 , 57120)	\cf2 //send to sclang\cf3 \
+n.sendMsg(\cf6 \\chat\cf3 , \cf5 "hello"\cf3 )\
+}
