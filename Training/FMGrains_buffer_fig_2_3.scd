@@ -20,7 +20,7 @@ SynthDef(\FMGrains, {
 		levelScale: amp,
 		doneAction: 2);
 	Out.ar(0,
-		GrainFM.ar(2, trigger, dur, b, rate, b.bufnum, maxGrains: maxgrains) * env)
+		GrainBuf.ar(2, trigger, dur * 10, b, 1, b.bufnum, maxGrains: maxgrains) * env)
 }).add;
 )
 
