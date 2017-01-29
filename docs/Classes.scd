@@ -10,4 +10,5 @@ SinOsc
 Pan2
 MouseX
 Mix
-
+Crackle
+Impulse
