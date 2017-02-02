@@ -12,3 +12,13 @@ MouseX
 Mix
 Crackle
 Impulse
+Rand
+IRand
+TRand
+LFNoise0
+LFDNoise0
+FreeVerb
+GVerb
+EnvGen
+Pan2
+Array
